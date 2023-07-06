@@ -1,0 +1,52 @@
+Name: Workflow_1bfd
+SchemaVersion: "1.0"
+
+# Optional - Set automatic triggers.
+Triggers:
+  - Type: Push
+    Branches:
+      - main
+  - Type: PULLREQUEST
+    Branches:
+      - main
+    Events:
+      - OPEN
+      - REVISION
+      - CLOSED
+
+# Required - Define action configurations.
+Actions:
+  Build_1c:
+    # Identifies the action. Do not modify this value.
+    Identifier: aws/build@v1.0.0
+
+    # Specifies the source and/or artifacts to pass to the action as input.
+    Inputs:
+      # Optional
+      Sources:
+        - WorkflowSource # This specifies that the action requires this Workflow as a source
+
+    Outputs:
+      # Optional; Automatically discover reports for popular test frameworks
+      AutoDiscoverReports:
+        Enabled: true
+        # Use as prefix for the report files
+        ReportNamePrefix: rpt
+
+    # Defines the action's properties.
+    Configuration:
+      # Required - Steps are sequential instructions that run shell commands
+      Steps:
+        - Run: env
+        - Run: git status
+        - Run: git branch
+        - Run: export SONAR_TOKEN=${Secrets.SONAR_TOKEN}
+        - Run: wget
+            "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.7.0.2747-linux.zip"
+            -P /opt
+        - Run: ls
+        - Run: unzip /opt/sonar-scanner-cli-4.7.0.2747-linux.zip -d /opt
+        - Run: /opt/sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner
+            -Dsonar.organization=florian-thoni-sonarsource
+            -Dsonar.projectKey=florian-thoni-sonarsource_test -Dsonar.sources=.
+            -Dsonar.host.url=https://sonarcloud.io -Dsonar.exclusions=venv/**
