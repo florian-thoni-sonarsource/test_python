@@ -5,10 +5,10 @@ SchemaVersion: "1.0"
 Triggers:
   - Type: Push
     Branches:
-      - main
+      - ".*"
   - Type: PULLREQUEST
     Branches:
-      - main
+      - ".*"
     Events:
       - OPEN
       - REVISION
