@@ -46,10 +46,7 @@ Actions:
             -P /opt
         - Run: ls
         - Run: unzip /opt/sonar-scanner-cli-4.7.0.2747-linux.zip -d /opt
-        - Run: /opt/sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner
-            -Dsonar.organization=florian-thoni-sonarsource
-            -Dsonar.projectKey=florian-thoni-sonarsource_test -Dsonar.sources=.
-            -Dsonar.host.url=https://sonarcloud.io -Dsonar.exclusions=venv/**
+        - Run: /opt/sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner -Dsonar.organization=florian-thoni-sonarsource -Dsonar.projectKey=florian-thoni-sonarsource_test -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.exclusions=venv/**
   GitHubActions_fa:
     # Identifies the action. Do not modify this value.
     Identifier: aws/github-actions-runner@v1.0.0
@@ -72,6 +69,14 @@ Actions:
           uses: SonarSource/sonarcloud-github-action@master
           env:
             SONAR_TOKEN: ${Secrets.SONAR_TOKEN}
+          with:
+            args: >
+              -Dsonar.organization=florian-thoni-sonarsource
+              -Dsonar.projectKey=florian-thoni-sonarsource_test
+              -Dsonar.sources=.
+              -Dsonar.host.url=https://sonarcloud.io
+              -Dsonar.exclusions=venv/**
+              -Dsonar.branch.name=${WorkflowSource.BranchName}
     Compute:
       Type: EC2
       Fleet: Linux.x86-64.Large
